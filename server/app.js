@@ -4,8 +4,18 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import taskRouter from './routes/task.routes.js';
+import path from 'path';
+import { fileURLToPath } from 'url';
 
 const app = express();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+app.use(express.static(path.join(__dirname, 'public')))
+
+app.get('/',(req,res) =>{
+    res.sendFile(path.join(__dirname, 'public', 'index.html'))
+})
 
 app.use(cors(
     {
@@ -18,6 +28,6 @@ app.use(bodyParser.urlencoded({extended: true}))
 
 app.use('/api/tasks', taskRouter);
 
-app.use(express.static('public'))
+// app.use(express.static('public'))
 
 export default app;
