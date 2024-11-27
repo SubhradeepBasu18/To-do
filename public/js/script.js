@@ -89,7 +89,7 @@ async function getTodos(){
 
 async function addTodo(task){
     try {
-        const response = await fetch('https://to-do-0e9c.onrender.com/addTodo',{
+        const response = await fetch('https://to-do-0e9c.onrender.com/api/tasks/addTodo',{
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json'
@@ -112,7 +112,7 @@ async function addTodo(task){
 async function updateStatus(id) {
 
     try {
-        const response = await fetch('https://to-do-0e9c.onrender.com/updateTodo/' + id, {
+        const response = await fetch('https://to-do-0e9c.onrender.com/api/tasks/updateTodo/' + id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -134,7 +134,7 @@ async function updateStatus(id) {
 
 async function deleteTask(id){
     try {
-        const response = await fetch('https://to-do-0e9c.onrender.com/deleteTodo/' + id, {
+        const response = await fetch('https://to-do-0e9c.onrender.com/api/tasks/deleteTodo/' + id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
