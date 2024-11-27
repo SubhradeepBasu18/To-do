@@ -1,5 +1,5 @@
 import { configDotenv } from 'dotenv';
-configDotenv({path: '../.env'});
+configDotenv();
 import mongoose from 'mongoose';
 import {DB_NAME} from '../constants.js'
 
