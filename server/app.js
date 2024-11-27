@@ -6,6 +6,7 @@ import cors from 'cors';
 import taskRouter from './routes/task.routes.js';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import cookieParser from 'cookie-parser';
 
 const app = express();
 const __filename = fileURLToPath(import.meta.url);
@@ -25,6 +26,7 @@ app.use(cors(
 ))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(cookieParser())
 
 app.use('/api/tasks', taskRouter);
 

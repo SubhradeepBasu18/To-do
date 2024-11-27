@@ -1,14 +1,20 @@
 import { Todo } from '../models/todo.models.js';
+import crypto from 'crypto';
+import mongoose from 'mongoose';
 
 const getTodos = async (req, res) => {
     try {
         const todos = await Todo.find();
-        if (!todos.length) {
-            return res.status(200).json({ message: "No tasks found" });
-        }
-        res.status(200).json(todos);
+        
+        const maskedTodos = todos.map(todo => ({
+            id: crypto.createHash('sha256').update(todo._id.toString()).digest('hex').substr(0, 12),
+            task: todo.task,
+            status: todo.status
+        }));
+
+        res.status(200).json(maskedTodos);
     } catch (error) {
-        console.log("Error in getting todos: ", error);
+        console.error("Error in getting todos: ", error);
         res.status(500).json({ message: "Some error occurred" });
     }
 };
@@ -17,61 +23,76 @@ const addTodo = async (req, res) => {
     try {
         const { task, status = false } = req.body;
 
-        // Validate the task
-        if (!task || typeof task !== 'string' || task.trim() === '') {
-            return res.status(400).json({ message: "Valid task is required" });
-        }
-
-        // Validate the status
-        if (typeof status !== 'boolean') {
-            return res.status(400).json({ message: "Status must be a boolean" });
-        }
-
         const todo = new Todo({
             task,
             status
         });
 
         await todo.save();
-        res.status(201).json({ message: "Todo added successfully" });
+
+        const maskedId = crypto.createHash('sha256').update(todo._id.toString()).digest('hex').substr(0, 12);
+
+        res.status(201).json({ 
+            id: maskedId,
+            task: todo.task,
+            status: todo.status
+        });
     } catch (error) {
-        console.log("Error in adding todo: ", error);
+        console.error("Error in adding todo: ", error);
         res.status(500).json({ message: "An error occurred while adding the todo" });
     }
 };
 
-const updateTodo = async(req,res) =>{
+const updateTodo = async(req, res) => {
     try {
-        
-        // const {task,status} = req.body;
-        const {id} = req.params;
+        const { id } = req.params;
+        console.log('Received update ID:', id);
 
-        const todo = await Todo.findById(id);
-        const status = !todo.status
+        const todos = await Todo.find();
+        const todo = todos.find(t => 
+            crypto.createHash('sha256').update(t._id.toString()).digest('hex').substr(0, 12) === id
+        );
 
-        const updatedTask = await Todo.findByIdAndUpdate(
-            id,
-            {status},
-            {new:true}
-        )
+        if (!todo) {
+            return res.status(404).json({ message: "Todo not found" });
+        }
 
-        res.status(200).json(updatedTask)
+        todo.status = !todo.status;
+        await todo.save();
+
+        const maskedId = crypto.createHash('sha256').update(todo._id.toString()).digest('hex').substr(0, 12);
+
+        res.status(200).json({ 
+            id: maskedId,
+            task: todo.task,
+            status: todo.status
+        });
     } catch (error) {
-        console.log('Error updating todo:', error);
-        res.status(500).json({message: 'An error occurred while updating the todo'});        
+        console.error('Error updating todo:', error);
+        res.status(500).json({ message: 'An error occurred while updating the todo' });        
     }
-}
+};
 
-const deleteTodo = async(req,res) =>{
+const deleteTodo = async(req, res) => {
     try {
-        const {id} = req.params
+        const { id } = req.params;
+        console.log('Received delete ID:', id);
 
-        const response = await Todo.findByIdAndDelete(id)
-        res.status(200).json({message: 'Todo deleted successfully'});
+        const todos = await Todo.find();
+        const todoToDelete = todos.find(t => 
+            crypto.createHash('sha256').update(t._id.toString()).digest('hex').substr(0, 12) === id
+        );
+
+        if (!todoToDelete) {
+            return res.status(404).json({ message: "Todo not found" });
+        }
+
+        await Todo.findByIdAndDelete(todoToDelete._id);
+        res.status(200).json({ message: 'Todo deleted successfully' });
     } catch (error) {
-        console.log('Error deleting todo:', error);   
-        res.status(500).json({message: 'An error occurred while deleting the todo'});     
+        console.error('Error deleting todo:', error);   
+        res.status(500).json({ message: 'An error occurred while deleting the todo' });     
     }
-}
+};
 
 export { getTodos, addTodo, updateTodo, deleteTodo };

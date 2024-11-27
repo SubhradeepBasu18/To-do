@@ -1,3 +1,6 @@
+const API_ENDPOINT = 'https://to-do-0e9c.onrender.com/api/tasks' // for deployment
+// const API_ENDPOINT = 'http://localhost:3000/api/tasks' // for local development
+
 function formattedDateTime(date){
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
@@ -60,18 +63,18 @@ function displayTasks(todos){
         }
 
         checkIcon.addEventListener('click',()=>{
-            updateStatus(todo._id)
+            updateStatus(todo.id)
         })
 
         deleteIcon.addEventListener('click',()=>{
-            deleteTask(todo._id)
+            deleteTask(todo.id)
         })
     });
 }
 
 async function getTodos(){
     try {
-        const response = await fetch('https://to-do-0e9c.onrender.com/api/tasks/',{
+        const response = await fetch(`${API_ENDPOINT}/`,{
             method: 'GET',
             headers: {
                 'Content-Type':'application/json'
@@ -89,7 +92,7 @@ async function getTodos(){
 
 async function addTodo(task){
     try {
-        const response = await fetch('https://to-do-0e9c.onrender.com/api/tasks/addTodo',{
+        const response = await fetch(`${API_ENDPOINT}/addTodo`,{
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json'
@@ -112,7 +115,7 @@ async function addTodo(task){
 async function updateStatus(id) {
 
     try {
-        const response = await fetch('https://to-do-0e9c.onrender.com/api/tasks/updateTodo/' + id, {
+        const response = await fetch(`${API_ENDPOINT}/updateTodo/` + id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -134,7 +137,7 @@ async function updateStatus(id) {
 
 async function deleteTask(id){
     try {
-        const response = await fetch('https://to-do-0e9c.onrender.com/api/tasks/deleteTodo/' + id, {
+        const response = await fetch(`${API_ENDPOINT}/deleteTodo/` + id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
