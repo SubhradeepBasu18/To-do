@@ -1,5 +1,5 @@
-// const API_ENDPOINT = process.env.API_ENDPOINT ; //for deployment
-const API_ENDPOINT = 'http://localhost:3000'; //for local development
+const API_ENDPOINT = process.env.API_ENDPOINT ; //for deployment
+// const API_ENDPOINT = 'http://localhost:3000'; //for local development
 
 function formattedDateTime(date){
     const day = String(date.getDate()).padStart(2, '0');
