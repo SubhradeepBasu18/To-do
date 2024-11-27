@@ -20,8 +20,4 @@ app.use('/api/tasks', taskRouter);
 
 app.use(express.static('public'))
 
-app.get('/', (req, res) => {
-    res.sendFile(path.resolve('public/index.html'));
-});
-
 export default app;
