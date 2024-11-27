@@ -1,6 +1,3 @@
-const API_ENDPOINT = process.env.API_ENDPOINT ; //for deployment
-// const API_ENDPOINT = 'http://localhost:3000'; //for local development
-
 function formattedDateTime(date){
     const day = String(date.getDate()).padStart(2, '0');
     const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-indexed
@@ -74,7 +71,7 @@ function displayTasks(todos){
 
 async function getTodos(){
     try {
-        const response = await fetch(`${API_ENDPOINT}/api/tasks/`,{
+        const response = await fetch('https://to-do-0e9c.onrender.com/api/tasks/',{
             method: 'GET',
             headers: {
                 'Content-Type':'application/json'
@@ -92,7 +89,7 @@ async function getTodos(){
 
 async function addTodo(task){
     try {
-        const response = await fetch(`${API_ENDPOINT}/api/tasks/addTodo`,{
+        const response = await fetch('https://to-do-0e9c.onrender.com/api/tasks/addTodo',{
             method: 'POST',
             headers:{
                 'Content-Type': 'application/json'
@@ -115,7 +112,7 @@ async function addTodo(task){
 async function updateStatus(id) {
 
     try {
-        const response = await fetch(`${API_ENDPOINT}/api/tasks/updateTodo/` + id, {
+        const response = await fetch('https://to-do-0e9c.onrender.com/api/tasks/updateTodo/' + id, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -137,7 +134,7 @@ async function updateStatus(id) {
 
 async function deleteTask(id){
     try {
-        const response = await fetch(`${API_ENDPOINT}/api/tasks/deleteTodo/`+ id, {
+        const response = await fetch('https://to-do-0e9c.onrender.com/api/tasks/deleteTodo/' + id, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'
